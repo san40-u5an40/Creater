@@ -2,12 +2,11 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
 
 internal static class Creater
 {
     // Путь куда переместить, путь до приложения NativeAot, стандартное название для конечного файла
-    private const string APPS = @"СЮДА НЕОБХОДИМО ВСТАВИТЬ ПУТЬ, ВКЛЮЧЁННЫЙ В $PATH";
+    private const string APPS = @"*ВСТАВИТЬ СВОЙ ПУТЬ, ВКЛЮЧЁННЫЙ В $PATH*";
     private const string EXE = @".\bin\Release\net9.0\win-x64\publish\";
     private const string DEFAULT_NAME_EXE = "app";
 
@@ -23,7 +22,7 @@ internal static class Creater
         FileInfo? app = GetExeFile();
         if(app == null)
         {
-            MessageBox(IntPtr.Zero, "Ошибка:\nФайл не найден!", "Creater", MS_TYPE_CLASSIC | MS_ICON_ERROR);
+            Console.WriteLine("Ошибка: Файл не найден!");
             return;
         }
 
@@ -34,11 +33,14 @@ internal static class Creater
         string newPath = Path.Combine(APPS, name + ".exe");
 
         // Вопрос о необходимости перезаписи, если файл с новым именем уже существует
-        int answer = 0;
         if (Path.Exists(newPath))
         {
-            answer = MessageBox(IntPtr.Zero, "Файл уже создан. Перезаписать?", "Creater", MS_TYPE_YES_NO | MS_ICON_QUESTION);
-            if (answer == MS_CHOICE_NO)
+            Console.Write("Файл уже создан. Перезаписать? (Y/N): _\b");
+            var answer = Console.ReadKey();
+
+            Console.Write('\r' + new string(' ', Console.WindowWidth) + '\r'); // Очистка строки
+
+            if (answer.Key != ConsoleKey.Y)
                 return;
         }
 
@@ -46,11 +48,11 @@ internal static class Creater
         try
         {
             app.MoveTo(newPath, true);
-            MessageBox(IntPtr.Zero, "Файл " + app.Name + " успешно создан!", "Creater", MS_TYPE_CLASSIC);
+            Console.WriteLine("Файл " + app.Name + " успешно создан!");
         }
         catch (Exception ex)
         {
-            MessageBox(IntPtr.Zero, "Ошибка:\n" + ex.Message, "Creater", MS_TYPE_CLASSIC | MS_ICON_ERROR);
+            Console.WriteLine("Ошибка:\n" + ex.Message);
         }
     }
 
@@ -103,20 +105,4 @@ internal static class Creater
         else
             return string.Join(' ', args);
     }
-
-    // Импортируем MessageBox
-    [DllImport("user32.dll", CharSet = CharSet.Unicode)]
-    private static extern int MessageBox(IntPtr hWnd, string text, string caption, uint type);
-
-    // Типы окон
-    private const uint MS_TYPE_CLASSIC= 0x00000000;
-    private const uint MS_TYPE_YES_NO = 0x00000004;
-
-    // Иконки
-    private const uint MS_ICON_QUESTION = 0x00000020;
-    private const uint MS_ICON_ERROR = 0x00000010;
-
-    // Типы ответов при YESNO
-    private const int MS_CHOICE_YES = 6;
-    private const int MS_CHOICE_NO = 7;
 }
