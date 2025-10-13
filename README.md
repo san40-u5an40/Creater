@@ -37,12 +37,19 @@ Z:\4_programming\csharp\projects\Creater\ProgramFiles>pub
 Использование самой программы (в моём случае называется "crt"):
 ```CMD
 Z:\4_programming\csharp\projects\Creater\ProgramFiles>crt new
-:: Тут появится MessageBox либо с уведомлением об успешном создании файла
-:: Либо с вопросом о необходимости перезаписать файл, в случае его существоания
+Файл new.exe успешно создан!
+
+Z:\4_programming\csharp\projects\Creater\ProgramFiles>
+
+:: Появилось уведомление об успешном создании файла
+:: Если файл с таким именем уже будет существовать, программа спросит о необходимости перезаписать этот файл
 ```
 
 После перемещения программы в $PATH её можно сразу же использовать:
 ```CMD
 Z:\4_programming\csharp\projects\Creater\ProgramFiles>new test
-:: Выйдет уведомление о том, что файл не найден, т.к. он уже был перемещён
+Ошибка: Файл не найден!
+
+Z:\4_programming\csharp\projects\Creater\ProgramFiles>
+:: Т.к. файл из bin\Release\net9.0\win-x64\publish\ уже был перемещён в $PATH
 ```
